@@ -71,6 +71,12 @@ Log in with these credentials to access the protected dashboard:
 - If you move to a secure token backend, add `.env.local` (e.g., `API_URL`, `AUTH_TOKEN`) and update `src/store/useStore.js`.
 
 ## Notes
-
+### 🧠 State Management: Why Zustand?
+For this project, I chose Zustand over other libraries like Redux for several key reasons:
+Simplicity & Less Boilerplate: Unlike Redux, which requires actions, reducers, and dispatchers, Zustand allows for a more concise and readable store definition.
+Small Footprint: It is a lightweight library (approx. 1KB), which is ideal for maintaining high performance in a medium-sized application.
+Built-in Async Actions: Handling API calls directly within the store is straightforward, making the data fetching logic clean and modular.
+Middlewares (Persist): The ease of integrating persist middleware made implementing a persistent authentication session (via localStorage) seamless.
+Performance: It uses a simplified pub/sub model, ensuring components only re-render when the specific state they subscribe to actually changes.
 - Auth and caches are persisted locally; logout clears auth.
 - Pagination and filters are passed as query params and cached per page/filter.
