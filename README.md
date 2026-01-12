@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Green Dream Earth – Admin UI (Next.js + MUI + Zustand)
 
-## Getting Started
+Responsive admin dashboard using Next.js (Pages router), Material UI, and Zustand with persist/cache for DummyJSON users/products.
 
-First, run the development server:
+## Quick start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- No environment variables are required. Auth tokens are stored via Zustand persist (localStorage). If you later switch to a secure token backend, add the necessary secrets to a `.env.local` file (e.g., `API_URL` or `AUTH_TOKEN`) and update `src/store/useStore.js` accordingly.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Demo login
 
-## Learn More
+- Username: `emilys`
+- Password: `emilyspass`
 
-To learn more about Next.js, take a look at the following resources:
+## Key features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Auth with persisted session (Zustand + localStorage); login redirect and protected routes.
+- Responsive layout: desktop shows permanent sidebar; mobile shows hamburger + temporary drawer (collapse disabled on mobile).
+- Dashboard with stats, recent users table, and shortcut cards.
+- Users/products lists with search, pagination, category filter, and cached pages to avoid repeat fetches.
+- Detail pages via `getServerSideProps` for server-rendered fetch.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+- `src/pages` – Next.js Pages router (login, dashboard, users, products).
+- `src/components` – Layout, shared UI (search, pagination, skeletons, error state).
+- `src/store/useStore.js` – Zustand store with persist, auth, users/products/category fetch + cache.
+- `src/theme/theme.js` – MUI theme setup.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` – start dev server
+- `npm run build` – production build
+- `npm run start` – run built app
+
+## Auth & routing
+
+- Login required for all routes except `/login`. Auth guard waits for persist hydration to avoid redirect loops.
+- Successful login redirects to `/dashboard`; already-authenticated users hitting `/login` are redirected.
+- Logout clears store and returns to `/login`.
+
+## Data & caching
+
+- API: DummyJSON (`https://dummyjson.com`).
+- Pagination and filters are passed as query params; caches keyed by `limit-skip-search[-category]`.
+- Cache-first reads prevent repeat network calls for the same page/filter combo; persisted auth uses localStorage.
+
+## Responsive behavior
+
+- Sidebar: permanent on `md+`; temporary drawer with hamburger on `sm`/mobile; collapse toggle hidden on mobile.
+- Dashboard shortcuts: `xs=12 md=6` so they stack on mobile.
+- Products grid: CSS grid 1/2/3/4 columns at `xs/sm/md/lg`.
+
+## Error handling
+
+- Login failures show “Email or password incorrect.”
+- List fetch errors render an error state with retry.
+
+## Design tokens
+
+- Custom MUI palette (forest/earth tones), rounded shapes, responsive typography.
+
+## Notes
+
+- No environment variables required; all endpoints public DummyJSON.
+- If you change API credentials/URLs, update `src/store/useStore.js`.
